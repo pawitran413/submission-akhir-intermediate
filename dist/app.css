@@ -1,0 +1,42 @@
+/* Notification Button */
+.btn-notification {
+	background-color: #4caf50;
+	color: white;
+	padding: 12px 16px;
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+	text-align: left;
+	width: 100%;
+	font-size: 1rem;
+	font-weight: 500;
+	transition: background-color 0.3s ease;
+}
+
+.btn-notification:hover,
+.btn-notification:focus {
+	background-color: #45a049;
+}
+
+#unsubscribe-push-notification {
+	background-color: #f44336;
+}
+
+#unsubscribe-push-notification:hover,
+#unsubscribe-push-notification:focus {
+	background-color: #da190b;
+}
+
+@media screen and (width > 1000px) {
+	.btn-notification {
+		width: auto;
+		text-align: center;
+		background: rgba(255, 255, 255, 0.1);
+	}
+
+	.btn-notification:hover,
+	.btn-notification:focus {
+		background: rgba(255, 255, 255, 0.2);
+	}
+}
+

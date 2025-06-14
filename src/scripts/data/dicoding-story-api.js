@@ -6,6 +6,7 @@ const ENDPOINTS = {
 	STORIES: `${CONFIG.BASE_URL}/stories`,
 	STORIES_GUEST: `${CONFIG.BASE_URL}/stories/guest`,
 	STORY_DETAIL: (id) => `${CONFIG.BASE_URL}/stories/${id}`,
+	SUBSCRIBE_NOTIFICATION: `${CONFIG.BASE_URL}/notifications/subscribe`,
 };
 
 class DicodingStoryAPI {
@@ -83,6 +84,53 @@ class DicodingStoryAPI {
 			body: formData,
 		});
 		return await response.json();
+	}
+
+	static async subscribePushNotification(token, subscription) {
+		// ===== PERBAIKAN DIMULAI DI SINI =====
+		const subscriptionData = subscription.toJSON();
+
+		// Buat objek payload baru tanpa field 'expirationTime'
+		const payload = {
+			endpoint: subscriptionData.endpoint,
+			keys: subscriptionData.keys,
+		};
+		// ===== AKHIR DARI PERBAIKAN =====
+
+		const response = await fetch(ENDPOINTS.SUBSCRIBE_NOTIFICATION, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			// Kirim payload yang sudah bersih
+			body: JSON.stringify(payload),
+		});
+
+		if (!response.ok) {
+			const errorData = await response.json();
+			throw new Error(errorData.message || "Failed to subscribe");
+		}
+
+		return response.json();
+	}
+
+	static async unsubscribePushNotification(token, endpoint) {
+		const response = await fetch(ENDPOINTS.SUBSCRIBE_NOTIFICATION, {
+			method: "DELETE",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify({ endpoint }),
+		});
+
+		if (!response.ok) {
+			const errorData = await response.json();
+			throw new Error(errorData.message || "Failed to unsubscribe");
+		}
+
+		return response.json();
 	}
 }
 

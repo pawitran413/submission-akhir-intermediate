@@ -1,0 +1,1 @@
+self.addEventListener("push",(i=>{console.log("Service Worker: Pushed");const o=i.data.json(),{title:t,options:e}=o,n=self.registration.showNotification(t,e);i.waitUntil(n)})),self.addEventListener("notificationclick",(i=>{console.log("Service Worker: Notification clicked"),i.notification.close();const o=clients.openWindow("/");i.waitUntil(o)}));
