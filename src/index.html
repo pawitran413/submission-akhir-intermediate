@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="shortcut icon" href="favicon.png" />
+
+		<!-- Leaflet CSS -->
+		<link
+			rel="stylesheet"
+			href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+		/>
+
+		<title>Dicoding Stories</title>
+	</head>
+	<body>
+		<div class="skip-link">
+			<a href="#main-content" class="skip-to-content">Skip to Content</a>
+		</div>
+
+		<header role="banner">
+			<div class="main-header container">
+				<a class="brand-name" href="#/" aria-label="Dicoding Stories Home">
+					<img src="images/logo.png" alt="Dicoding Stories" class="logo" />
+					<span>Stories</span>
+				</a>
+
+				<nav
+					id="navigation-drawer"
+					class="navigation-drawer"
+					role="navigation"
+					aria-label="Main navigation"
+				>
+					<ul id="nav-list" class="nav-list">
+						<li><a href="#/">Home</a></li>
+						<li><a href="#/add-story">Add Story</a></li>
+						<li><a href="#/about">About</a></li>
+						<li><a href="#/login" id="auth-link">Login</a></li>
+						<li><a href="#/register" id="register-link">Register</a></li>
+					</ul>
+				</nav>
+
+				<button
+					id="drawer-button"
+					class="drawer-button"
+					aria-label="Toggle navigation menu"
+					aria-expanded="false"
+				>
+					☰
+				</button>
+			</div>
+		</header>
+
+		<main id="main-content" class="main-content" role="main"></main>
+
+		<footer role="contentinfo" class="main-footer">
+			<div class="container">
+				<p>&copy; 2024 Dicoding Stories.</p>
+			</div>
+		</footer>
+
+		<!-- Leaflet JS -->
+		<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+	</body>
+</html>

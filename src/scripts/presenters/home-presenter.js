@@ -1,0 +1,82 @@
+import MapHelper from "../utils/map-helper";
+
+class HomePresenter {
+	constructor({ view, model }) {
+		this.view = view;
+		this.model = model;
+		this.map = null;
+	}
+
+	async init() {
+		this.view.render();
+		await this.loadStories();
+		await this.initializeMap();
+		this.setupEventHandlers();
+	}
+
+	async loadStories() {
+		try {
+			if (!this.model.isAuthenticated()) {
+				this.view.showAuthPrompt();
+				return;
+			}
+
+			this.view.showLoading();
+			const stories = await this.model.getAllStories();
+			this.view.hideLoading();
+			this.view.displayStories(stories);
+		} catch (error) {
+			this.view.hideLoading();
+			this.view.showError(error.message);
+		}
+	}
+
+	async initializeMap() {
+		try {
+			const mapContainer = this.view.getMapContainer();
+			if (!mapContainer) return;
+
+			this.map = await MapHelper.initializeMap("stories-map");
+
+			const stories = this.model.stories;
+			stories.forEach((story) => {
+				if (story.lat && story.lon) {
+					const popupContent = this.createPopupContent(story);
+					MapHelper.addMarker(this.map, story.lat, story.lon, popupContent);
+				}
+			});
+		} catch (error) {
+			console.error("Error initializing map:", error);
+		}
+	}
+
+	createPopupContent(story) {
+		return `
+      <div class="map-popup">
+        <h4>${story.name}</h4>
+        <p>${story.description.substring(0, 100)}...</p>
+        <small>${new Date(story.createdAt).toLocaleDateString()}</small>
+      </div>
+    `;
+	}
+
+	setupEventHandlers() {
+		this.view.bindMapLayerSelect(this.handleMapLayerChange.bind(this));
+	}
+
+	handleMapLayerChange(layerType) {
+		if (this.map) {
+			MapHelper.changeBaseLayer(this.map, layerType);
+		}
+	}
+
+	// Cleanup when leaving page
+	destroy() {
+		if (this.map) {
+			this.map.remove();
+			this.map = null;
+		}
+	}
+}
+
+export default HomePresenter;
