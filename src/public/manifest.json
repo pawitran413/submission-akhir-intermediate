@@ -2,7 +2,7 @@
 	"name": "Dicoding Stories",
 	"short_name": "Stories",
 	"description": "A progressive web app for sharing your amazing stories.",
-	"start_url": "/index.html",
+	"start_url": "/submission-akhir-intermediate/",
 	"display": "standalone",
 	"background_color": "#ffffff",
 	"theme_color": "#667eea",
