@@ -160,10 +160,6 @@ class StoryDetailView {
               📤 Share Story
             </button>
           </div>
-          
-          <div class="story-info">
-            <p class="story-id">Story ID: <code>${story.id}</code></p>
-          </div>
         </footer>
       </article>
     `;

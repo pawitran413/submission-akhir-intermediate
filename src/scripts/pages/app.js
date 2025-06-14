@@ -1,5 +1,7 @@
 import { getActiveRoute } from "../routes/url-parser";
 import routes from "../routes/routes";
+import AuthHelper from "../utils/auth-helper";
+import PushNotificationHelper from "../utils/push-notification-helper";
 
 class App {
 	#content = null;
@@ -13,6 +15,7 @@ class App {
 		this.#navigationDrawer = navigationDrawer;
 
 		this._setupDrawer();
+		this._initialAppShell();
 	}
 
 	_setupDrawer() {
@@ -36,6 +39,35 @@ class App {
 		});
 	}
 
+	_initialAppShell() {
+		this._updateAuthNav();
+
+		const logoutLink = document.querySelector("#logout-link");
+		logoutLink.addEventListener("click", (event) => {
+			event.preventDefault();
+			AuthHelper.logout();
+			this._updateAuthNav();
+			PushNotificationHelper._updateSubscriptionUI();
+			window.location.hash = "#/login";
+		});
+	}
+
+	_updateAuthNav() {
+		const loginLink = document.querySelector("#login-link");
+		const registerLink = document.querySelector("#register-link");
+		const logoutLink = document.querySelector("#logout-link");
+
+		if (AuthHelper.isAuthenticated()) {
+			loginLink.style.display = "none";
+			registerLink.style.display = "none";
+			logoutLink.style.display = "block";
+		} else {
+			loginLink.style.display = "block";
+			registerLink.style.display = "block";
+			logoutLink.style.display = "none";
+		}
+	}
+
 	async renderPage() {
 		const url = getActiveRoute();
 		const route = routes[url];
@@ -56,6 +88,10 @@ class App {
 
 		// Create new presenter
 		this.#currentPresenter = route.init();
+
+		// Update auth nav and push notification UI on each page render
+		this._updateAuthNav();
+		PushNotificationHelper._updateSubscriptionUI();
 
 		// Use View Transition API if supported
 		if (document.startViewTransition) {
