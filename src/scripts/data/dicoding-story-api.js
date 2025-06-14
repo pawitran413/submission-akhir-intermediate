@@ -87,15 +87,12 @@ class DicodingStoryAPI {
 	}
 
 	static async subscribePushNotification(token, subscription) {
-		// ===== PERBAIKAN DIMULAI DI SINI =====
 		const subscriptionData = subscription.toJSON();
 
-		// Buat objek payload baru tanpa field 'expirationTime'
 		const payload = {
 			endpoint: subscriptionData.endpoint,
 			keys: subscriptionData.keys,
 		};
-		// ===== AKHIR DARI PERBAIKAN =====
 
 		const response = await fetch(ENDPOINTS.SUBSCRIBE_NOTIFICATION, {
 			method: "POST",
@@ -103,7 +100,6 @@ class DicodingStoryAPI {
 				"Content-Type": "application/json",
 				Authorization: `Bearer ${token}`,
 			},
-			// Kirim payload yang sudah bersih
 			body: JSON.stringify(payload),
 		});
 

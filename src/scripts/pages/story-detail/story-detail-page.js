@@ -33,7 +33,6 @@ export default class StoryDetailPage {
 	}
 
 	async afterRender() {
-		// Check authentication
 		if (!AuthHelper.isAuthenticated()) {
 			this.renderAuthRequired();
 			return;
@@ -47,7 +46,6 @@ export default class StoryDetailPage {
 		const storyContent = document.getElementById("story-content");
 
 		try {
-			// Get story ID from URL hash
 			const storyId = this.getStoryIdFromUrl();
 
 			if (!storyId) {
@@ -65,7 +63,6 @@ export default class StoryDetailPage {
 			loadingIndicator.style.display = "none";
 			this.renderStoryDetail();
 
-			// Initialize map if story has location
 			if (this.story.lat && this.story.lon) {
 				await this.initializeMap();
 			}
@@ -163,25 +160,17 @@ export default class StoryDetailPage {
               📤 Share Story
             </button>
           </div>
-          
-          <div class="story-info">
-            <p class="story-id">Story ID: <code>${this.story.id}</code></p>
-          </div>
         </footer>
       </article>
     `;
-
-		// Add share functionality
 		this.setupShareButton();
 
-		// Setup map controls if location exists
 		if (this.story.lat && this.story.lon) {
 			this.setupMapControls();
 		}
 	}
 
 	formatDescription(description) {
-		// Convert line breaks to paragraphs and handle basic formatting
 		return description
 			.split("\n")
 			.filter((line) => line.trim().length > 0)
@@ -196,10 +185,9 @@ export default class StoryDetailPage {
 				"story-map",
 				this.story.lat,
 				this.story.lon,
-				15 // Higher zoom level for detail view
+				15
 			);
 
-			// Add marker with story info
 			const popupContent = `
         <div class="story-map-popup">
           <h4>${this.story.name}'s Story</h4>
@@ -252,7 +240,6 @@ export default class StoryDetailPage {
 					if (navigator.share) {
 						await navigator.share(shareData);
 					} else {
-						// Fallback: copy to clipboard
 						await navigator.clipboard.writeText(window.location.href);
 						this.showToast("Story link copied to clipboard!");
 					}
@@ -265,7 +252,6 @@ export default class StoryDetailPage {
 	}
 
 	showToast(message) {
-		// Create and show a simple toast notification
 		const toast = document.createElement("div");
 		toast.className = "toast";
 		toast.textContent = message;
@@ -274,10 +260,8 @@ export default class StoryDetailPage {
 
 		document.body.appendChild(toast);
 
-		// Show toast
 		setTimeout(() => toast.classList.add("show"), 100);
 
-		// Hide and remove toast
 		setTimeout(() => {
 			toast.classList.remove("show");
 			setTimeout(() => document.body.removeChild(toast), 300);
@@ -299,13 +283,11 @@ export default class StoryDetailPage {
 	}
 
 	getStoryIdFromUrl() {
-		// Extract story ID from hash like #/story/story-123
 		const hash = window.location.hash;
 		const match = hash.match(/^#\/story\/(.+)$/);
 		return match ? match[1] : null;
 	}
 
-	// Cleanup when leaving page
 	onDestroy() {
 		if (this.map) {
 			this.map.remove();

@@ -10,7 +10,9 @@ const PushNotificationHelper = {
 		}
 
 		await this._registerServiceWorker();
-		this.subscribeButton = document.querySelector("#subscribe-push-notification");
+		this.subscribeButton = document.querySelector(
+			"#subscribe-push-notification"
+		);
 		this.unsubscribeButton = document.querySelector(
 			"#unsubscribe-push-notification"
 		);
@@ -50,25 +52,22 @@ const PushNotificationHelper = {
 				return;
 			}
 
-			// ===== PERBAIKAN DIMULAI DI SINI =====
 			let pushSubscription = await this._getPushSubscription();
 
-			// Jika tidak ada subscription, buat yang baru
-			if (!pushSubscription) {
-				console.log("Creating new push subscription...");
-				pushSubscription = await this._createPushSubscription();
-				if (!pushSubscription) {
-					console.error("Failed to create new push subscription.");
-					return;
-				}
+			if (pushSubscription) {
+				console.log("User is already subscribed.");
+				return;
 			}
-			// ===== AKHIR DARI PERBAIKAN =====
+
+			console.log("Creating new push subscription...");
+			pushSubscription = await this._createPushSubscription();
+			if (!pushSubscription) {
+				console.error("Failed to create new push subscription.");
+				return;
+			}
 
 			const token = AuthHelper.getToken();
-			await DicodingStoryAPI.subscribePushNotification(
-				token,
-				pushSubscription
-			);
+			await DicodingStoryAPI.subscribePushNotification(token, pushSubscription);
 			await this._updateSubscriptionUI();
 			console.log("Successfully subscribed to push notification");
 		} catch (error) {
@@ -98,8 +97,6 @@ const PushNotificationHelper = {
 		const registration = await navigator.serviceWorker.ready;
 		return await registration.pushManager.getSubscription();
 	},
-
-
 
 	async _requestPermission() {
 		return await Notification.requestPermission();
@@ -151,9 +148,10 @@ const PushNotificationHelper = {
 			return subscription;
 		} catch (error) {
 			console.error("Error creating subscription:", error);
-			// Jika pengguna menolak izin, browser akan melempar error.
-			if (Notification.permission === 'denied') {
-				alert("You have denied notification permissions. Please enable them in your browser settings to subscribe.");
+			if (Notification.permission === "denied") {
+				alert(
+					"You have denied notification permissions. Please enable them in your browser settings to subscribe."
+				);
 			}
 			return null;
 		}
