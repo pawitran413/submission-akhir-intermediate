@@ -62,6 +62,32 @@ class HomePresenter {
 
 	setupEventHandlers() {
 		this.view.bindMapLayerSelect(this.handleMapLayerChange.bind(this));
+		this.view.bindClearStories(this.handleClearStories.bind(this));
+	}
+
+	async handleClearStories() {
+		const confirmation = confirm(
+			"Are you sure you want to delete all cached stories? This action cannot be undone."
+		);
+		if (confirmation) {
+			try {
+				await this.model.clearStories();
+				alert("Cached stories have been cleared successfully.");
+				// Re-render to show empty state
+				this.view.displayStories([]);
+				// Clear markers on the map
+				if (this.map) {
+					this.map.eachLayer((layer) => {
+						if (layer instanceof L.Marker) {
+							this.map.removeLayer(layer);
+						}
+					});
+				}
+			} catch (error) {
+				alert("Failed to clear cached stories. Please try again.");
+				console.error("Error clearing stories:", error);
+			}
+		}
 	}
 
 	handleMapLayerChange(layerType) {

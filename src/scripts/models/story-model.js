@@ -1,5 +1,6 @@
 import DicodingStoryAPI from "../data/dicoding-story-api";
 import AuthHelper from "../utils/auth-helper";
+import IndexedDbHelper from "../utils/indexed-db-helper";
 
 class StoryModel {
 	constructor() {
@@ -25,9 +26,17 @@ class StoryModel {
 			}
 
 			this.stories = response.listStory;
+			await IndexedDbHelper.putAllStories(this.stories); // Menyimpan cerita ke IndexedDB
 			return this.stories;
 		} catch (error) {
-			throw error;
+			console.error("Failed to fetch from API, trying IndexedDB", error);
+			this.stories = await IndexedDbHelper.getAllStories(); // Mengambil dari IndexedDB jika offline
+			if (this.stories.length === 0) {
+				throw new Error(
+					"You are offline and no stories are cached. Please connect to the internet."
+				);
+			}
+			return this.stories;
 		}
 	}
 
@@ -46,7 +55,14 @@ class StoryModel {
 
 			return response.story;
 		} catch (error) {
-			throw error;
+			console.error("Failed to fetch from API, trying IndexedDB", error);
+			const story = await IndexedDbHelper.getStory(id);
+			if (!story) {
+				throw new Error(
+					"You are offline and this story is not cached. Please connect to the internet."
+				);
+			}
+			return story;
 		}
 	}
 
@@ -77,6 +93,11 @@ class StoryModel {
 
 	isAuthenticated() {
 		return AuthHelper.isAuthenticated();
+	}
+
+	async clearStories() {
+		await IndexedDbHelper.clearAllStories();
+		this.stories = [];
 	}
 }
 

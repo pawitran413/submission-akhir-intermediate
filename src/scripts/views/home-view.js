@@ -13,6 +13,7 @@ class HomeView {
       <section class="container" role="main">
         <header class="page-header">
           <h1>Dicoding Stories</h1>
+          <button id="clear-stories-button" class="btn btn-danger" style="margin-top: 1rem;">Clear Cached Stories</button>
         </header>
 
         <div class="stories-container">
@@ -123,6 +124,13 @@ class HomeView {
 			layerSelect.addEventListener("change", (e) => {
 				handler(e.target.value);
 			});
+		}
+	}
+
+	bindClearStories(handler) {
+		const clearButton = document.getElementById("clear-stories-button");
+		if (clearButton) {
+			clearButton.addEventListener("click", handler);
 		}
 	}
 
