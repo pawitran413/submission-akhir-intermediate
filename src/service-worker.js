@@ -1,19 +1,21 @@
-const CACHE_NAME = "dicoding-stories-v1";
+// Ganti seluruh isi file src/service-worker.js dengan ini
+
+const CACHE_NAME = "dicoding-stories-v2"; // NAMA CACHE DIUBAH
 const API_BASE_URL = "https://story-api.dicoding.dev/v1/";
 const ASSETS_TO_CACHE = [
-	"/",
-	"index.html",
-	"app.bundle.js",
-	"app.css",
-	"favicon.png",
-	"images/logo.png",
-	"manifest.json",
-	"icons/icon-72x72.png",
-	"icons/icon-96x96.png",
-	"icons/icon-128x128.png",
-	"icons/icon-144x144.png",
-	"icons/icon-192x192.png",
-	"icons/icon-512x512.png",
+	"./",
+	"./index.html",
+	"./app.bundle.js",
+	"./app.css",
+	"./favicon.png",
+	"./images/logo.png",
+	"./manifest.json",
+	"./icons/icon-72x72.png",
+	"./icons/icon-96x96.png",
+	"./icons/icon-128x128.png",
+	"./icons/icon-144x144.png",
+	"./icons/icon-192x192.png",
+	"./icons/icon-512x512.png",
 	"https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
 	"https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
 ];
