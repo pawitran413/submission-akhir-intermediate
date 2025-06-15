@@ -1,6 +1,6 @@
 // Ganti seluruh isi file src/service-worker.js dengan ini
 
-const CACHE_NAME = "dicoding-stories-v2"; // NAMA CACHE DIUBAH
+const CACHE_NAME = "dicoding-stories-v3"; // NAMA CACHE DIUBAH LAGI
 const API_BASE_URL = "https://story-api.dicoding.dev/v1/";
 const ASSETS_TO_CACHE = [
 	"./",
@@ -56,48 +56,51 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
+	// Abaikan request selain GET
 	if (event.request.method !== "GET") {
 		return;
 	}
 
-	const url = new URL(event.request.url);
-	if (url.protocol !== "http:" && url.protocol !== "https:") {
-		return;
-	}
-
+	// Strategi untuk API: Network first, fallback ke cache
 	if (event.request.url.startsWith(API_BASE_URL)) {
 		event.respondWith(
-			caches.open(CACHE_NAME).then((cache) => {
-				return fetch(event.request)
-					.then((response) => {
-						if (response.status === 200) {
-							cache.put(event.request, response.clone());
-						}
-						return response;
-					})
-					.catch(() => {
-						return caches.match(event.request);
-					});
+			caches.open(CACHE_NAME).then(async (cache) => {
+				try {
+					const networkResponse = await fetch(event.request);
+					if (networkResponse.ok) {
+						cache.put(event.request, networkResponse.clone());
+					}
+					return networkResponse;
+				} catch (error) {
+					return cache.match(event.request);
+				}
 			})
 		);
 		return;
 	}
 
+	// Strategi untuk aset lain (termasuk navigasi halaman)
 	event.respondWith(
-		caches.match(event.request).then((response) => {
-			return (
-				response ||
-				fetch(event.request).then((networkResponse) => {
-					return caches.open(CACHE_NAME).then((cache) => {
-						cache.put(event.request, networkResponse.clone());
-						return networkResponse;
-					});
-				})
-			);
+		caches.match(event.request).then((cachedResponse) => {
+			// Jika ada di cache, langsung berikan
+			if (cachedResponse) {
+				return cachedResponse;
+			}
+
+			// Jika tidak ada di cache, coba ambil dari network
+			return fetch(event.request).catch(() => {
+				// Jika fetch gagal (offline) DAN ini adalah permintaan navigasi halaman,
+				// berikan index.html sebagai fallback.
+				if (event.request.mode === "navigate") {
+					return caches.match("./index.html");
+				}
+				// Untuk request lain yang gagal (misal: gambar), biarkan saja gagal.
+			});
 		})
 	);
 });
 
+// Listener untuk push & notificationclick tetap sama
 self.addEventListener("push", (event) => {
 	console.log("Service Worker: Pushed");
 	const notificationData = event.data.json();
@@ -109,6 +112,6 @@ self.addEventListener("push", (event) => {
 self.addEventListener("notificationclick", (event) => {
 	console.log("Service Worker: Notification clicked");
 	event.notification.close();
-	const openPromise = clients.openWindow("/");
+	const openPromise = clients.openWindow("./"); // Arahkan ke root aplikasi
 	event.waitUntil(openPromise);
 });
