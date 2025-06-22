@@ -25,6 +25,7 @@ class HomePresenter {
 			const stories = await this.model.getAllStories();
 			this.view.hideLoading();
 			this.view.displayStories(stories);
+			this.view.bindSaveStoryButtons(stories, this.handleSaveStory.bind(this));
 		} catch (error) {
 			this.view.hideLoading();
 			this.view.showError(error.message);
@@ -93,6 +94,21 @@ class HomePresenter {
 	handleMapLayerChange(layerType) {
 		if (this.map) {
 			MapHelper.changeBaseLayer(this.map, layerType);
+		}
+	}
+
+	async handleSaveStory(storyId) {
+		try {
+			const story = this.model.stories.find((s) => s.id === storyId);
+			if (!story) {
+				alert("Story not found.");
+				return;
+			}
+			await this.model.saveStoryToIndexedDB(story);
+			alert("Story berhasil disimpan ke perangkat!");
+		} catch (error) {
+			alert("Gagal menyimpan story. Silakan coba lagi.");
+			console.error(error);
 		}
 	}
 

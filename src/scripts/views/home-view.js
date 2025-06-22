@@ -93,9 +93,7 @@ class HomeView {
         <article class="story-card" role="article">
           <div class="story-image">
             <img src="${story.photoUrl}" 
-                 alt="Story photo by ${
-										story.name
-									}: ${story.description.substring(0, 100)}..." 
+                 alt="Story photo by ${story.name}: ${story.description.substring(0, 100)}..." 
                  loading="lazy">
           </div>
           <div class="story-content">
@@ -104,11 +102,12 @@ class HomeView {
             <time class="story-date" datetime="${story.createdAt}">
               ${showFormattedDate(story.createdAt)}
             </time>
-            <a href="#/story/${
-							story.id
-						}" class="story-link" aria-label="Read full story by ${story.name}">
+            <a href="#/story/${story.id}" class="story-link" aria-label="Read full story by ${story.name}">
               Read More
             </a>
+            <button type="button" class="btn btn-success save-story-btn" id="save-story-btn-${story.id}" data-story-id="${story.id}">
+              Simpan Story
+            </button>
           </div>
         </article>
       `
@@ -136,6 +135,19 @@ class HomeView {
 
 	getMapContainer() {
 		return document.getElementById("stories-map");
+	}
+
+	bindSaveStoryButton(storyId, handler) {
+		const btn = document.getElementById(`save-story-btn-${storyId}`);
+		if (btn) {
+			btn.addEventListener("click", () => handler(storyId));
+		}
+	}
+
+	bindSaveStoryButtons(stories, handler) {
+		stories.forEach((story) => {
+			this.bindSaveStoryButton(story.id, handler);
+		});
 	}
 }
 

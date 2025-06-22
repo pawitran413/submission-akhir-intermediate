@@ -26,7 +26,6 @@ class StoryModel {
 			}
 
 			this.stories = response.listStory;
-			await IndexedDbHelper.putAllStories(this.stories); // Menyimpan cerita ke IndexedDB
 			return this.stories;
 		} catch (error) {
 			console.error("Failed to fetch from API, trying IndexedDB", error);
@@ -98,6 +97,10 @@ class StoryModel {
 	async clearStories() {
 		await IndexedDbHelper.clearAllStories();
 		this.stories = [];
+	}
+
+	async saveStoryToIndexedDB(story) {
+		return IndexedDbHelper.putStory(story);
 	}
 }
 
