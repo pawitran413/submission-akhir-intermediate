@@ -50,6 +50,16 @@ class App {
 			PushNotificationHelper._updateSubscriptionUI();
 			window.location.hash = "#/login";
 		});
+
+		// Tambahkan navigasi Saved Stories jika belum ada
+		const navDrawer = this.#navigationDrawer;
+		if (navDrawer && !navDrawer.querySelector("#saved-stories-link")) {
+			const savedStoriesLink = document.createElement("a");
+			savedStoriesLink.href = "#/saved-stories";
+			savedStoriesLink.id = "saved-stories-link";
+			savedStoriesLink.textContent = "Saved Stories";
+			navDrawer.appendChild(savedStoriesLink);
+		}
 	}
 
 	_updateAuthNav() {

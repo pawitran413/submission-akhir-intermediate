@@ -9,6 +9,7 @@ import LoginView from "../views/login-view";
 import RegisterView from "../views/register-view";
 import AddStoryView from "../views/add-story-view";
 import StoryDetailView from "../views/story-detail-view";
+import SavedStoriesView from "../views/saved-stories-view";
 
 // Presenters
 import HomePresenter from "../presenters/home-presenter";
@@ -17,6 +18,7 @@ import LoginPresenter from "../presenters/login-presenter";
 import RegisterPresenter from "../presenters/register-presenter";
 import AddStoryPresenter from "../presenters/add-story-presenter";
 import StoryDetailPresenter from "../presenters/story-detail-presenter";
+import SavedStoriesPresenter from "../presenters/saved-stories-presenter";
 
 const routes = {
 	"/": {
@@ -64,6 +66,11 @@ const routes = {
 			const model = new StoryModel();
 			const presenter = new StoryDetailPresenter({ view, model });
 			return presenter;
+		},
+	},
+	"/saved-stories": {
+		init: () => {
+			return new SavedStoriesPresenter();
 		},
 	},
 };
